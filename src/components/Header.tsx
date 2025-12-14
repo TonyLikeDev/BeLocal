@@ -15,10 +15,12 @@ const Header = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <a href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">G</span>
-              </div>
-              <span className="font-bold text-xl text-foreground">GrabLocal</span>
+              <img 
+                src="https://avatars.githubusercontent.com/u/17284363?s=280&v=4" 
+                alt="BeLocal Logo" 
+                className="w-10 h-10 rounded-xl"
+              />
+              <span className="font-bold text-xl text-foreground">BeLocal</span>
             </a>
 
             {/* Search Bar - Desktop */}

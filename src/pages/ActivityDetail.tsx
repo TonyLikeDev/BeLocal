@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
+import LocationMap from '@/components/LocationMap';
 import PaymentModal from '@/components/PaymentModal';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -196,15 +197,12 @@ const ActivityDetail = () => {
             {/* Map Section */}
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Location</h2>
-              <div className="rounded-xl overflow-hidden border bg-muted aspect-video flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">Map Preview</p>
-                  <p className="text-xs">{activity.location}</p>
-                  <Button variant="outline" size="sm" className="mt-4">
-                    Open in Google Maps
-                  </Button>
-                </div>
+              <div className="rounded-xl overflow-hidden border">
+                <LocationMap 
+                  lat={activity.lat || 16.047079} 
+                  lng={activity.lng || 108.206230}
+                  locationName={activity.location}
+                />
               </div>
             </div>
 
