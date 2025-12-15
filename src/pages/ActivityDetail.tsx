@@ -370,6 +370,9 @@ const ActivityDetail = () => {
         onOpenChange={setIsPaymentOpen}
         amount={totalPrice}
         activityTitle={activity.title}
+        activityId={activity.id}
+        date={selectedDate}
+        guests={guests}
       />
     </div>
   );
