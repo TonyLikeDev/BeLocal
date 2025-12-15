@@ -123,6 +123,44 @@ const Index = () => {
         )}
       </main>
 
+      {/* Why Choose Us */}
+      <section className="bg-white border-t">
+        <div className="container mx-auto px-4 py-12 text-center">
+          <h3 className="text-2xl font-bold text-foreground mb-2">Why Choose Us</h3>
+          <p className="text-muted-foreground mb-8">Here are the reasons to choose us when traveling in Da Nang</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-6 rounded-lg bg-muted/10">
+              <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">📍</div>
+              <h4 className="font-semibold mb-2">30+ authentic local experiences</h4>
+              <p className="text-sm text-muted-foreground mb-4">Not just tours — enjoy real local moments and hidden gems across Da Nang.</p>
+              <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
+            </div>
+
+            <div className="p-6 rounded-lg bg-muted/10">
+              <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">🧑‍💼</div>
+              <h4 className="font-semibold mb-2">100% verified local hosts</h4>
+              <p className="text-sm text-muted-foreground mb-4">Experience hosts and guides who know the area and care about your visit.</p>
+              <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
+            </div>
+
+            <div className="p-6 rounded-lg bg-muted/10">
+              <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">💲</div>
+              <h4 className="font-semibold mb-2">Clear, transparent pricing</h4>
+              <p className="text-sm text-muted-foreground mb-4">All fees shown upfront — no hidden costs. Book with confidence.</p>
+              <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
+            </div>
+
+            <div className="p-6 rounded-lg bg-muted/10">
+              <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">🤝</div>
+              <h4 className="font-semibold mb-2">Bookings support local communities</h4>
+              <p className="text-sm text-muted-foreground mb-4">Each booking helps local hosts and community initiatives across the region.</p>
+              <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-muted/50 border-t mt-16">
         <div className="container mx-auto px-4 py-12">
