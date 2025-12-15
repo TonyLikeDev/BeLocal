@@ -16,7 +16,7 @@ const Header = () => {
             {/* Logo */}
             <a href="/" className="flex items-center gap-2">
               <img 
-                src="https://avatars.githubusercontent.com/u/17284363?s=280&v=4" 
+                src="/fav.png" 
                 alt="BeLocal Logo" 
                 className="w-10 h-10 rounded-xl"
               />
