@@ -5,6 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Mail, Phone, Eye, EyeOff } from 'lucide-react';
+import useAuth from '@/hooks/useAuth';
+
+interface Props {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
 interface AuthModalProps {
   open: boolean;
@@ -14,6 +20,13 @@ interface AuthModalProps {
 const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [showPassword, setShowPassword] = useState(false);
+  const { login, signup, loading } = useAuth();
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,11 +47,11 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" placeholder="John" />
+                <Input id="firstName" placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" placeholder="Doe" />
+                <Input id="lastName" placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} />
               </div>
             </div>
           )}
@@ -47,7 +60,7 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
             <Label htmlFor="email">Email or Phone</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input id="email" placeholder="Enter email or phone" className="pl-10" />
+              <Input id="email" placeholder="Enter email or phone" className="pl-10" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
           </div>
 
@@ -58,6 +71,8 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
                 id="password" 
                 type={showPassword ? 'text' : 'password'} 
                 placeholder="Enter password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Button
                 type="button"
@@ -75,8 +90,25 @@ const AuthModal = ({ open, onOpenChange }: AuthModalProps) => {
             </div>
           </div>
 
-          <Button className="w-full" size="lg">
-            {mode === 'login' ? 'Sign In' : 'Create Account'}
+          {error && (
+            <div className="text-sm text-destructive text-center">{error}</div>
+          )}
+
+          <Button className="w-full" size="lg" onClick={async () => {
+            setError(null);
+            try {
+              if (mode === 'login') {
+                await login(email, password);
+              } else {
+                await signup(firstName || undefined, lastName || undefined, email, password);
+              }
+              // close modal on success
+              onOpenChange(false);
+            } catch (err: any) {
+              setError(err?.message || 'An error occurred');
+            }
+          }}>
+            {loading ? 'Please wait...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
           </Button>
 
           <div className="relative">
