@@ -165,7 +165,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2024 GrabLocal. All rights reserved.
+            © 2025 BeLocal. All rights reserved.
           </div>
         </div>
       </footer>
