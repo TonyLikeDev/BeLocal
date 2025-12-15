@@ -3,10 +3,12 @@ import { Menu, X, MapPin, Search, User, Heart, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AuthModal from './AuthModal';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <>
@@ -41,14 +43,23 @@ const Header = () => {
                 <Heart className="h-4 w-4 mr-2" />
                 Wishlist
               </Button>
-              <Button 
-                variant="default" 
-                size="sm"
-                onClick={() => setIsAuthOpen(true)}
-              >
-                <LogIn className="h-4 w-4 mr-2" />
-                Login
-              </Button>
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Hi, {user.firstName || user.email}</span>
+                  <Button variant="ghost" size="sm" onClick={() => logout()}>
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  onClick={() => setIsAuthOpen(true)}
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Login
+                </Button>
+              )}
             </nav>
 
             {/* Mobile Menu Button */}
@@ -83,17 +94,23 @@ const Header = () => {
                   <User className="h-4 w-4 mr-3" />
                   Profile
                 </Button>
-                <Button 
-                  variant="default" 
-                  className="justify-start"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setIsAuthOpen(true);
-                  }}
-                >
-                  <LogIn className="h-4 w-4 mr-3" />
-                  Login / Sign Up
-                </Button>
+                {!user ? (
+                  <Button 
+                    variant="default" 
+                    className="justify-start"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsAuthOpen(true);
+                    }}
+                  >
+                    <LogIn className="h-4 w-4 mr-3" />
+                    Login / Sign Up
+                  </Button>
+                ) : (
+                  <Button variant="ghost" className="justify-start" onClick={() => { logout(); setIsMenuOpen(false); }}>
+                    Logout
+                  </Button>
+                )}
               </nav>
             </div>
           </div>
