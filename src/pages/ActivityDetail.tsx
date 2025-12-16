@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import useWishlist from '@/hooks/useWishlist';
+import { toast } from '@/hooks/use-toast';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import LocationMap from '@/components/LocationMap';
@@ -27,7 +29,7 @@ const ActivityDetail = () => {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [guests, setGuests] = useState(1);
-  const [isLiked, setIsLiked] = useState(false);
+  const wishlist = useWishlist();
 
   const activity = getActivityById(id || '');
   const details = getActivityDetails(id || '');
@@ -87,9 +89,21 @@ const ActivityDetail = () => {
                   variant="secondary"
                   size="icon"
                   className="bg-background/80 backdrop-blur-sm"
-                  onClick={() => setIsLiked(!isLiked)}
+                  onClick={async () => {
+                    try {
+                      if (!wishlist.isSaved(activity.id)) {
+                        await wishlist.add(activity.id);
+                        toast({ title: 'Saved', description: 'Added to your wishlist' });
+                      } else {
+                        await wishlist.remove(activity.id);
+                        toast({ title: 'Removed', description: 'Removed from wishlist' });
+                      }
+                    } catch (err: any) {
+                      toast({ title: 'Error', description: err?.message || 'Could not update wishlist' });
+                    }
+                  }}
                 >
-                  <Heart className={`h-4 w-4 ${isLiked ? 'fill-price text-price' : ''}`} />
+                  <Heart className={`h-4 w-4 ${wishlist.isSaved(activity.id) ? 'fill-price text-price' : ''}`} />
                 </Button>
                 <Button
                   variant="secondary"
@@ -140,9 +154,68 @@ const ActivityDetail = () => {
             {/* Description */}
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">About this experience</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                {details.description}
-              </p>
+              <div className="text-muted-foreground leading-relaxed">
+                {/** Render description with simple parsing: paragraphs and bullet lists for numbered lines */}
+                {(() => {
+                  const text: string = details.description || '';
+                  const lines = text.split('\n').map((l) => l.trim()).filter((l) => l !== '');
+                  const elements: any[] = [];
+                  let i = 0;
+                  while (i < lines.length) {
+                    const line = lines[i];
+                    // detect numbered list start (e.g., "1. Item")
+                    if (/^\d+\./.test(line)) {
+                      const items: string[] = [];
+                      while (i < lines.length && /^\d+\./.test(lines[i])) {
+                        // remove leading numbering
+                        items.push(lines[i].replace(/^\d+\.\s*/, ''));
+                        i++;
+                      }
+                      elements.push(
+                        <ul className="list-disc pl-5 space-y-1" key={`list-${i}`}>
+                            {items.map((it, idx) => (
+                              <li key={idx} className="text-base text-muted-foreground">{it}</li>
+                            ))}
+                          </ul>
+                      );
+                      continue;
+                    }
+
+                    // detect bullet-like lines starting with - or •
+                    if (/^[\-•]\s+/.test(line)) {
+                      const items: string[] = [];
+                      while (i < lines.length && (/^[\-•]\s+/.test(lines[i]))) {
+                        items.push(lines[i].replace(/^[\-•]\s+/, ''));
+                        i++;
+                      }
+                      elements.push(
+                        <ul className="list-disc pl-5 space-y-1" key={`list-${i}`}>
+                            {items.map((it, idx) => (
+                              <li key={idx} className="text-base text-muted-foreground">{it}</li>
+                            ))}
+                          </ul>
+                      );
+                      continue;
+                    }
+
+                    // treat as paragraph or heading (e.g., Menu I:)
+                    if (/^Menu\s+[I|V|X]+\:/i.test(line) || /Menu\s+II/i.test(line) || /Menu\s+I/i.test(line)) {
+                      elements.push(
+                        <p key={`p-${i}`} className="font-medium text-base text-foreground">{line}</p>
+                      );
+                      i++;
+                      continue;
+                    }
+
+                    elements.push(
+                      <p key={`p-${i}`} className="text-base text-muted-foreground">{line}</p>
+                    );
+                    i++;
+                  }
+
+                  return elements;
+                })()}
+              </div>
             </div>
 
             <Separator />
@@ -197,13 +270,17 @@ const ActivityDetail = () => {
             {/* Map Section */}
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Location</h2>
-              <div className="rounded-xl overflow-hidden border">
-                <LocationMap 
-                  lat={activity.lat || 16.047079} 
-                  lng={activity.lng || 108.206230}
-                  locationName={activity.location}
-                />
-              </div>
+                <div className="mb-3 text-sm text-muted-foreground flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>{details?.address ?? activity.address ?? 'Location not specified'}</span>
+                </div>
+                <div className="rounded-xl overflow-hidden border">
+                  <LocationMap 
+                    lat={details?.mapCoords?.lat ?? activity.lat ?? 16.047079} 
+                    lng={details?.mapCoords?.lng ?? activity.lng ?? 108.206230}
+                    locationName={activity.location}
+                  />
+                </div>
             </div>
 
             <Separator />
@@ -345,7 +422,7 @@ const ActivityDetail = () => {
                   </Button>
 
                   <p className="text-center text-sm text-muted-foreground">
-                    Free cancellation up to 24 hours before
+                    Free cancellation up to 24 hours before scheduled arrival time
                   </p>
 
                   {/* Host Info */}
