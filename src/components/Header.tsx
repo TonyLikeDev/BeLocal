@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Menu, X, MapPin, Search, User, Heart, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +10,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -39,7 +41,7 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => navigate('/wishlist')}>
                 <Heart className="h-4 w-4 mr-2" />
                 Wishlist
               </Button>
@@ -86,7 +88,7 @@ const Header = () => {
                 />
               </div>
               <nav className="flex flex-col gap-2">
-                <Button variant="ghost" className="justify-start">
+                <Button variant="ghost" className="justify-start" onClick={() => { setIsMenuOpen(false); navigate('/wishlist'); }}>
                   <Heart className="h-4 w-4 mr-3" />
                   Wishlist
                 </Button>
