@@ -83,8 +83,8 @@ const PaymentModal = ({ open, onOpenChange, amount, activityTitle }: PaymentModa
           <DialogTitle className="text-xl font-bold">Complete Your Booking</DialogTitle>
         </DialogHeader>
 
-        {/* Scrollable content area */}
-        <div className="space-y-6 py-4 overflow-y-auto flex-1">
+  {/* Scrollable content area */}
+  <div className="space-y-6 py-4 overflow-y-auto flex-1 no-scrollbar">
           {/* Order Summary */}
           <div className="bg-muted/50 rounded-xl p-4 space-y-2">
             <h4 className="font-medium">Order Summary</h4>
