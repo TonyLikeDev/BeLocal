@@ -17,14 +17,19 @@ export interface Activity {
   originalPrice?: number;
   category: string;
   host: string;
+  lat?: number;
+  lng?: number;
+  address?: string;
 }
 
 interface ActivityCardProps {
   activity: Activity;
+  isSaved?: boolean;
+  onToggleSave?: (activityId: string) => void;
 }
 
-const ActivityCard = ({ activity }: ActivityCardProps) => {
-  const [isLiked, setIsLiked] = useState(false);
+const ActivityCard = ({ activity, isSaved: isSavedProp, onToggleSave }: ActivityCardProps) => {
+  const [isLiked, setIsLiked] = useState(!!isSavedProp);
   const navigate = useNavigate();
   
   const discountPercent = activity.originalPrice 
@@ -62,12 +67,16 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
           className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background"
           onClick={(e) => {
             e.stopPropagation();
-            setIsLiked(!isLiked);
+            if (onToggleSave) {
+              onToggleSave(activity.id);
+            } else {
+              setIsLiked(!isLiked);
+            }
           }}
         >
           <Heart 
             className={`h-4 w-4 transition-colors ${
-              isLiked ? 'fill-price text-price' : 'text-foreground'
+              (onToggleSave ? isSavedProp : isLiked) ? 'fill-price text-price' : 'text-foreground'
             }`} 
           />
         </Button>
