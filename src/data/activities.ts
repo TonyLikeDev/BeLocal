@@ -3,16 +3,19 @@ import type { Activity } from '@/components/ActivityCard';
 export const activities: Activity[] = [
   {
     id: '1',
-    title: 'Nam O Fishing Tour - Traditional Fishing Experience',
+    title: 'Da Nang Family Cooking Class - with Local Family in Da Nang',
     image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80',
     location: 'Da Nang',
-    rating: 4.8,
+    rating: 5,
     reviewCount: 124,
     duration: '3 hours',
     price: 45,
     originalPrice: 60,
     category: 'Tours',
     host: 'Local Guide Minh',
+    lat: 16.0401621337601,
+    lng: 108.221312477909,
+    address: '61 Han Thuyen, Hoa Cuong Bac, Hai Chau, Da Nang',
   },
   {
     id: '2',
@@ -25,6 +28,9 @@ export const activities: Activity[] = [
     price: 35,
     category: 'Water Sports',
     host: 'Ocean Adventure',
+    lat: 16.0711,
+    lng: 108.2569,
+    address: 'Son Tra Peninsula, Tho Quang, Son Tra, Da Nang',
   },
   {
     id: '3',
@@ -38,6 +44,9 @@ export const activities: Activity[] = [
     originalPrice: 35,
     category: 'Food & Drink',
     host: 'Hoi An Heritage',
+    lat: 15.8801,
+    lng: 108.3380,
+    address: 'Hoi An Ancient Town, Minh An, Hoi An, Quang Nam',
   },
   {
     id: '4',
@@ -50,6 +59,9 @@ export const activities: Activity[] = [
     price: 40,
     category: 'Adventure',
     host: 'Mountain Explorers',
+    lat: 16.0484,
+    lng: 108.2188,
+    address: 'Marble Mountains (Ngu Hanh Son), Hoa Hai, Ngu Hanh Son, Da Nang',
   },
   {
     id: '5',
@@ -62,6 +74,9 @@ export const activities: Activity[] = [
     price: 55,
     category: 'Food & Drink',
     host: 'Chef Lan',
+    lat: 15.8786,
+    lng: 108.3358,
+    address: 'Central Market, Hoi An (Cho Hoi An), Hoi An, Quang Nam',
   },
   {
     id: '6',
@@ -75,6 +90,9 @@ export const activities: Activity[] = [
     originalPrice: 95,
     category: 'Adventure',
     host: 'Vietnam Riders',
+    lat: 16.1285,
+    lng: 108.2123,
+    address: 'Hai Van Pass, Da Nang',
   },
   {
     id: '7',
@@ -87,6 +105,9 @@ export const activities: Activity[] = [
     price: 20,
     category: 'Arts & Crafts',
     host: 'Artisan Village',
+    lat: 15.8805,
+    lng: 108.3385,
+    address: 'Cam Chau Craft Village, Hoi An, Quang Nam',
   },
   {
     id: '8',
@@ -99,6 +120,9 @@ export const activities: Activity[] = [
     price: 15,
     category: 'Culture',
     host: 'Zen Beach Studio',
+    lat: 16.0590,
+    lng: 108.2330,
+    address: 'My Khe Beach, Phuoc My, Son Tra, Da Nang',
   },
 ];
 
@@ -115,12 +139,40 @@ export const activityDetails: Record<string, {
   mapCoords: { lat: number; lng: number };
 }> = {
   '1': {
-    description: 'Experience the authentic fishing traditions of Nam O village. Join local fishermen as they use centuries-old techniques passed down through generations. This immersive tour takes you beyond the tourist spots to discover the real heart of Vietnamese coastal life.',
+    description: `Learn how to cook authentic Vietnamese dishes in a local family's home in Da Nang. Choose from two different menus, each featuring a variety of local dishes.
+
+Experience the authentic culture and local life of Vietnam with a cooking class in a local home. Learn how to cook traditional Vietnamese dishes from a friendly local family host.
+
+Spend time with your host at their home and receive step-by-step instructions on how to cook simple yet delicious authentic Vietnamese cuisine. Take a hands-on approach to your lesson and then enjoy your own dishes for lunch or dinner.
+
+Gain insight into local life, culture, and stories from your host, who is also fluent in English and Chinese.
+
+Choose from 2 different menus, each featuring a variety of traditional Vietnamese dishes.
+
+Menu I:
+
+1. Bánh Xèo – Crispy & Savory Vietnamese Crêpes / Pancakes is a popular dish in the center and south of Vietnam. The name means "sizzling pancakes or crêpes" and refers to the sound the batter makes when it hits the hot skillet. Serve these shrimp-studded crêpes with lettuce, fresh mint and basil, and nuoc cham dipping sauce.
+
+2. Phở Cuốn / Gỏi Cuốn – Vietnamese fresh or dried rice paper rolls, a long-standing traditional dish from Northern Vietnam. Rolled pho is made from pho rice paper, wrapped with stir-fried beef with onions, shrimp or pork, cilantro, and lettuce. It is served with sweet and sour fish sauce with chopped garlic or peanut sauce.
+
+3. Rau Muống Xào Tỏi – Vietnamese stir-fried morning glory with garlic, a very common and fresh green vegetable dish served daily with rice in Vietnamese meals.
+
+4. Fruit Salad – Mango or pomelo salad mixed with carrot and sweet-and-sour fish sauce.
+
+Menu II:
+
+1. Bánh Xèo – Crispy & Savory Vietnamese Crêpes / Pancakes, served with fresh herbs and nuoc cham dipping sauce.
+
+2. Fruit Salad – Mango or pomelo salad mixed with carrot and sweet-and-sour fish sauce.
+
+3. Phở Bò – Vietnamese beef flat noodle soup, one of Vietnam’s most famous dishes. Originating in Northern Vietnam in the early 20th century, it features a rich broth made from beef bones, rice flat noodles (Bánh Phở), herbs, and tender beef. Garnished with coriander leaves, green onions, and white onions, and served with basil, bean sprouts, and lime juice.`
+,
     whatYouDo: [
-      'Meet local fishermen and learn traditional fishing techniques',
-      'Cast nets and collect the catch with the community',
-      'Learn about sustainable fishing practices',
-      'Enjoy fresh seafood prepared by local families',
+      'Experience the warmth of Vietnamese hospitality in a local family\'s home',
+      'Learn how to cook authentic Vietnamese dishes from a local family',
+      'The dishes are featuring a variety of local dishes of the different regions of Vietnam',
+      'Discover the real secrets of the famous Vietnamese cuisine from a local family',
+      'Enjoy a meal of your own creation of the great cuisine works',
     ],
     schedule: [
       '06:00 - Meet at pickup point',
@@ -130,18 +182,18 @@ export const activityDetails: Record<string, {
       '09:00 - Return to Da Nang',
     ],
     includes: [
-      'Round-trip transportation',
-      'Fresh seafood breakfast',
-      'Fishing equipment',
-      'English-speaking guide',
-      'Water and refreshments',
+      'Cooking lesson with a local family',
+      'Lunch or dinner of the dishes prepared',
+      'All ingredients for cooking',
+      'English and Chinese speaking host',
+      'Tea-Break and deserts',
     ],
     reviews: [
       { name: 'Sarah M.', rating: 5, comment: 'An incredible authentic experience! The local fishermen were so welcoming.', date: '2 weeks ago' },
       { name: 'John D.', rating: 5, comment: 'Much better than typical tourist activities. Highly recommend!', date: '1 month ago' },
       { name: 'Mai T.', rating: 4, comment: 'Great experience but early morning start was tough. Worth it though!', date: '1 month ago' },
     ],
-    mapCoords: { lat: 16.1028, lng: 108.1498 },
+    mapCoords: { lat: 16.0401621337601, lng: 108.221312477909 },
   },
 };
 
