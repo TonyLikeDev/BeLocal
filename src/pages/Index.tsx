@@ -4,10 +4,13 @@ import HeroSection from '@/components/HeroSection';
 import CategoryTabs from '@/components/CategoryTabs';
 import FilterBar, { Filters } from '@/components/FilterBar';
 import ActivityCard from '@/components/ActivityCard';
+import useWishlist from '@/hooks/useWishlist';
+import { toast } from '@/hooks/use-toast';
 import { activities } from '@/data/activities';
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const wishlist = useWishlist();
   const [filters, setFilters] = useState<Filters>({
     sortBy: '',
     location: '',
@@ -106,7 +109,23 @@ const Index = () => {
                 className="animate-fade-in"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <ActivityCard activity={activity} />
+                <ActivityCard 
+                  activity={activity} 
+                  isSaved={wishlist.items.includes(activity.id)}
+                  onToggleSave={async (activityId) => {
+                    try {
+                      if (!wishlist.items.includes(activityId)) {
+                        await wishlist.add(activityId);
+                        toast({ title: 'Saved', description: 'Added to your wishlist' });
+                      } else {
+                        await wishlist.remove(activityId);
+                        toast({ title: 'Removed', description: 'Removed from wishlist' });
+                      }
+                    } catch (err: any) {
+                      toast({ title: 'Error', description: err?.message || 'Could not update wishlist' });
+                    }
+                  }}
+                />
               </div>
             ))}
           </div>
@@ -133,28 +152,28 @@ const Index = () => {
             <div className="p-6 rounded-lg bg-muted/10">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">📍</div>
               <h4 className="font-semibold mb-2">30+ authentic local experiences</h4>
-              <p className="text-sm text-muted-foreground mb-4">Not just tours — enjoy real local moments and hidden gems across Da Nang.</p>
+              <p className="text-sm text-muted-foreground mb-4">Skip the tourist traps. With beLocal, you’ll step into the real Đà Nẵng, wandering hidden alleys, soaking up street vibes, and living everyday moments just like the locals.</p>
               <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
             </div>
 
             <div className="p-6 rounded-lg bg-muted/10">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">🧑‍💼</div>
               <h4 className="font-semibold mb-2">100% verified local hosts</h4>
-              <p className="text-sm text-muted-foreground mb-4">Experience hosts and guides who know the area and care about your visit.</p>
+              <p className="text-sm text-muted-foreground mb-4">Every guide and host is a true local, officially verified by local authorities. They’ll share authentic stories, bring you closer to the culture, and make sure your journey feels safe and personal.</p>
               <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
             </div>
 
             <div className="p-6 rounded-lg bg-muted/10">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">💲</div>
-              <h4 className="font-semibold mb-2">Clear, transparent pricing</h4>
-              <p className="text-sm text-muted-foreground mb-4">All fees shown upfront — no hidden costs. Book with confidence.</p>
+              <h4 className="font-semibold mb-2">Clear, All-Inclusive Pricing</h4>
+              <p className="text-sm text-muted-foreground mb-4">What you see is exactly what you pay for, so you can relax and enjoy every moment with peace of mind.</p>
               <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
             </div>
 
             <div className="p-6 rounded-lg bg-muted/10">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">🤝</div>
-              <h4 className="font-semibold mb-2">Bookings support local communities</h4>
-              <p className="text-sm text-muted-foreground mb-4">Each booking helps local hosts and community initiatives across the region.</p>
+              <h4 className="font-semibold mb-2">Travel That Gives Back</h4>
+              <p className="text-sm text-muted-foreground mb-4">Each booking helps support local livelihoods, creating opportunities for families, keeping traditions alive, and protecting the environment we all share.</p>
               <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
             </div>
           </div>
@@ -203,7 +222,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2025 BeLocal. All rights reserved.
+            © 2025 BeLocal.
           </div>
         </div>
       </footer>
