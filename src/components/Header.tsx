@@ -19,11 +19,7 @@ const Header = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <a href="/" className="flex items-center gap-2">
-              <img 
-                src="/fav.png" 
-                alt="BeLocal Logo" 
-                className="w-10 h-10 rounded-xl"
-              />
+              
               <span className="font-bold text-xl text-foreground">BeLocal</span>
             </a>
 
