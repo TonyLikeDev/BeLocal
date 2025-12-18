@@ -120,6 +120,40 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80;
   }
 
+  /* Leaflet map stacking and overflow fixes
+     Ensure map panes don't overlay other UI and that popups/controls are clipped
+     by their map container when wrapped with overflow-hidden. */
+  .leaflet-container {
+    position: relative;
+    z-index: 0; /* keep map behind UI elements by default */
+  }
+
+  /* Popup and control z-index should be lower than app UI but above map tiles */
+  .leaflet-container .leaflet-pane {
+    z-index: 0;
+  }
+
+  .leaflet-container .leaflet-tile-pane,
+  .leaflet-container .leaflet-overlay-pane {
+    z-index: 0;
+  }
+
+  /* Markers and shadows should be above tiles but below overlays/modals (z-50)
+     keep these lower than Radix Dialog z-50 to avoid map elements overlaying modals */
+  .leaflet-container .leaflet-marker-pane,
+  .leaflet-container .leaflet-shadow-pane {
+    z-index: 20; /* markers above tiles but below popups */
+  }
+
+  /* Popups and controls must be below app overlays (Dialog z-50). Set to z-40 */
+  .leaflet-container .leaflet-popup-pane,
+  .leaflet-container .leaflet-control {
+    z-index: 40; /* below app overlay/modal z-50 */
+  }
+
+  /* If you wrap the Map with overflow-hidden, popups will be clipped; this avoids them overlapping the page */
+  .map-clip { overflow: hidden; }
+
   .card-shadow {
     box-shadow: var(--shadow-card);
   }

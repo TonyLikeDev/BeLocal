@@ -4,6 +4,7 @@ import HeroSection from '@/components/HeroSection';
 import CategoryTabs from '@/components/CategoryTabs';
 import FilterBar, { Filters } from '@/components/FilterBar';
 import ActivityCard from '@/components/ActivityCard';
+import ActivityMap from '@/components/ActivityMap';
 import useWishlist from '@/hooks/useWishlist';
 import { toast } from '@/hooks/use-toast';
 import { activities } from '@/data/activities';
@@ -100,35 +101,9 @@ const Index = () => {
           </h2>
         </div>
 
-        {/* Activity Grid */}
+        {/* Activity Map */}
         {filteredActivities.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredActivities.map((activity, index) => (
-              <div 
-                key={activity.id} 
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <ActivityCard 
-                  activity={activity} 
-                  isSaved={wishlist.items.includes(activity.id)}
-                  onToggleSave={async (activityId) => {
-                    try {
-                      if (!wishlist.items.includes(activityId)) {
-                        await wishlist.add(activityId);
-                        toast({ title: 'Saved', description: 'Added to your wishlist' });
-                      } else {
-                        await wishlist.remove(activityId);
-                        toast({ title: 'Removed', description: 'Removed from wishlist' });
-                      }
-                    } catch (err: any) {
-                      toast({ title: 'Error', description: err?.message || 'Could not update wishlist' });
-                    }
-                  }}
-                />
-              </div>
-            ))}
-          </div>
+          <ActivityMap activities={filteredActivities} />
         ) : (
           <div className="text-center py-16">
             <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
