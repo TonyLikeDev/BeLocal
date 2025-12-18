@@ -40,9 +40,13 @@ const ActivityMap = ({ activities }: ActivityMapProps) => {
   const navigate = useNavigate();
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
-  const positions = activities
-    .filter((a) => typeof a.lat === 'number' && typeof a.lng === 'number')
-    .map((a) => [a.lat as number, a.lng as number] as [number, number]);
+  // Memoize positions so the reference doesn't change on hover/unhover re-renders
+  // (which would cause FitBounds to run repeatedly and recenter the map).
+  const positions = React.useMemo(() => {
+    return activities
+      .filter((a) => typeof a.lat === 'number' && typeof a.lng === 'number')
+      .map((a) => [a.lat as number, a.lng as number] as [number, number]);
+  }, [activities]);
 
   const defaultCenter: [number, number] = positions.length > 0 ? positions[0] : [16.0544, 108.2022];
 

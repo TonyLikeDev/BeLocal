@@ -52,7 +52,7 @@ const HeroSection = () => {
           {/* Stats */}
           <div className="flex items-center justify-center gap-8 pt-8">
             {[
-              { value: '500+', label: 'Activities' },
+              { value: '100+', label: 'Activities' },
               { value: '50K+', label: 'Happy Travelers' },
               { value: '100+', label: 'Local Guides' },
             ].map((stat) => (

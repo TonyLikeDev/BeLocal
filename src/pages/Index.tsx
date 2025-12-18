@@ -126,7 +126,7 @@ const Index = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="p-6 rounded-lg bg-muted/10">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-white border text-emerald-500 text-xl">📍</div>
-              <h4 className="font-semibold mb-2">30+ authentic local experiences</h4>
+              <h4 className="font-semibold mb-2">100+ authentic local experiences</h4>
               <p className="text-sm text-muted-foreground mb-4">Skip the tourist traps. With beLocal, you’ll step into the real Đà Nẵng, wandering hidden alleys, soaking up street vibes, and living everyday moments just like the locals.</p>
               <button className="text-sm text-emerald-600 border border-emerald-200 px-3 py-1 rounded">Learn more</button>
             </div>
