@@ -55,7 +55,7 @@ const ActivityMap = ({ activities }: ActivityMapProps) => {
           return (
             <div
               key={a.id}
-              onClick={() => window.open(`/activity/${a.id}`, '_blank')}
+              onClick={() => navigate(`/activity/${a.id}`)}
               onMouseEnter={() => setHoveredId(a.id)}
               onMouseLeave={() => setHoveredId(null)}
               className={`flex items-center gap-3 p-3 rounded-lg border bg-white cursor-pointer transition duration-150 ease-in-out ${
@@ -115,16 +115,8 @@ const ActivityMap = ({ activities }: ActivityMapProps) => {
                       setHoveredId(null);
                     },
                     click: () => {
-                      // Open activity in a new tab when marker is clicked
-                      try {
-                        window.open(`/activity/${activity.id}`, '_blank');
-                      } catch (err) {
-                        // fallback to navigate if window.open fails
-                        // eslint-disable-next-line no-console
-                        console.warn('Could not open new tab, navigating in-app instead');
-                        // Use location assign for fallback
-                        window.location.href = `/activity/${activity.id}`;
-                      }
+                      // Navigate in-app (same tab) to the activity detail
+                      navigate(`/activity/${activity.id}`);
                     }
                   }}
                 >
