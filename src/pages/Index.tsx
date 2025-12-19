@@ -6,7 +6,6 @@ import FilterBar, { Filters } from '@/components/FilterBar';
 import ActivityCard from '@/components/ActivityCard';
 import ActivityMap from '@/components/ActivityMap';
 import LocalSpecialties from '@/components/LocalSpecialties';
-import ActivityModal from '@/components/ActivityModal';
 import { locations } from '@/data/specialties';
 import useWishlist from '@/hooks/useWishlist';
 import { toast } from '@/hooks/use-toast';
@@ -15,8 +14,7 @@ import { activities } from '@/data/activities';
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const wishlist = useWishlist();
-  const [activeActivityId, setActiveActivityId] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // modal removed — activities now open in a new tab
   const [filters, setFilters] = useState<Filters>({
     sortBy: '',
     location: 'Da Nang',
@@ -147,13 +145,13 @@ const Index = () => {
                   }
                   return groups.map((group, idx) => (
                     <div key={idx} className="space-y-4">
-                      {group.map((act) => (
+                        {group.map((act) => (
                         <ActivityCard
                           key={act.id}
                           activity={act}
                           onToggleSave={(id) => wishlist.toggle(id)}
                           isSaved={wishlist.isSaved(act.id)}
-                          onOpen={(id) => { setActiveActivityId(id); setIsModalOpen(true); }}
+                            // opens in a new tab by ActivityCard
                         />
                       ))}
                     </div>
@@ -167,8 +165,7 @@ const Index = () => {
             </aside>
           </div>
 
-          {/* Activity modal */}
-          <ActivityModal activityId={activeActivityId} open={isModalOpen} onOpenChange={(open) => { setIsModalOpen(open); if (!open) setActiveActivityId(null); }} />
+          {/* Activity modal removed — clicking an activity opens in a new tab */}
         </section>
       </main>
 

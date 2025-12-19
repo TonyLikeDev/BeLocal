@@ -21,14 +21,14 @@ const ChatWidget: React.FC = () => {
 
   return (
     <div>
-      {/* Chat panel */}
-      <div className={`fixed bottom-20 right-4 z-50 transition-all ${open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-        <div className="w-80 bg-white border rounded-xl shadow-lg flex flex-col overflow-hidden">
+      {/* Chat panel (fixed landscape rectangle 320x640) */}
+      <div className={`fixed bottom-6 right-20 z-50`}>
+        <div style={{ width: 420, height: 500 }} className={`bg-white border rounded-xl shadow-lg flex flex-col overflow-hidden ${open ? '' : 'hidden'}`}>
           <div className="px-4 py-3 bg-emerald-600 text-white flex items-center justify-between">
             <div className="font-medium">BeLocal Chat</div>
             <button aria-label="Close chat" onClick={() => setOpen(false)} className="text-white opacity-90 hover:opacity-100">✕</button>
           </div>
-          <div className="p-3 flex-1 h-48 overflow-auto bg-slate-50">
+          <div className="p-3 flex-1 overflow-auto bg-slate-50">
             <div className="space-y-3">
               {messages.map((m) => (
                 <div key={m.id} className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>

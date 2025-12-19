@@ -40,10 +40,7 @@ const ActivityCard = ({ activity, isSaved: isSavedProp, onToggleSave, onOpen }: 
   return (
     <Card 
       className="group overflow-hidden border-0 card-shadow hover:elevated-shadow transition-all duration-300 cursor-pointer"
-      onClick={() => {
-        if (onOpen) return onOpen(activity.id);
-        navigate(`/activity/${activity.id}`);
-      }}
+      onClick={() => navigate(`/activity/${activity.id}`)}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img 

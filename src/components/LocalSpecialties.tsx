@@ -33,16 +33,16 @@ const LocalSpecialties: React.FC<Props> = ({ selectedCity }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <h4 className="font-semibold mb-3">Food</h4>
-          <div className="space-y-3">
+          <h4 className="font-medium text-sm mb-2">Food</h4>
+          <div className="space-y-2">
             {foodList.map((s) => (
               <Card key={s.id} className="overflow-hidden">
-                <CardContent className="p-3">
+                <CardContent className="p-2">
                   <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-muted rounded-md flex items-center justify-center text-sm font-medium">{s.title.slice(0,2)}</div>
+                    <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center text-xs font-medium">{s.title.slice(0,2)}</div>
                     <div>
-                      <div className="font-medium">{s.title}</div>
-                      <div className="text-sm text-muted-foreground">{s.description}</div>
+                      <div className="font-medium text-sm">{s.title}</div>
+                      <div className="text-xs text-muted-foreground">{s.description}</div>
                     </div>
                   </div>
                 </CardContent>
@@ -53,16 +53,16 @@ const LocalSpecialties: React.FC<Props> = ({ selectedCity }) => {
         </div>
 
         <div>
-          <h4 className="font-semibold mb-3">Specialties</h4>
-          <div className="space-y-3">
+          <h4 className="font-medium text-sm mb-2">Specialties</h4>
+          <div className="space-y-2">
             {otherList.map((s) => (
               <Card key={s.id} className="overflow-hidden">
-                <CardContent className="p-3">
+                <CardContent className="p-2">
                   <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-muted rounded-md flex items-center justify-center text-sm font-medium">{s.title.slice(0,2)}</div>
+                    <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center text-xs font-medium">{s.title.slice(0,2)}</div>
                     <div>
-                      <div className="font-medium">{s.title}</div>
-                      <div className="text-sm text-muted-foreground">{s.description}</div>
+                      <div className="font-medium text-sm">{s.title}</div>
+                      <div className="text-xs text-muted-foreground">{s.description}</div>
                     </div>
                   </div>
                 </CardContent>
