@@ -8,6 +8,7 @@ import Wishlist from "./pages/Wishlist";
 import ActivityDetail from "./pages/ActivityDetail";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from '@/hooks/useAuth';
+import ChatWidget from '@/components/ChatWidget';
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+        <ChatWidget />
       <AuthProvider>
         <BrowserRouter>
           <Routes>

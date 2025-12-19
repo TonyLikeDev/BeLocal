@@ -5,6 +5,9 @@ import CategoryTabs from '@/components/CategoryTabs';
 import FilterBar, { Filters } from '@/components/FilterBar';
 import ActivityCard from '@/components/ActivityCard';
 import ActivityMap from '@/components/ActivityMap';
+import LocalSpecialties from '@/components/LocalSpecialties';
+import ActivityModal from '@/components/ActivityModal';
+import { locations } from '@/data/specialties';
 import useWishlist from '@/hooks/useWishlist';
 import { toast } from '@/hooks/use-toast';
 import { activities } from '@/data/activities';
@@ -12,9 +15,11 @@ import { activities } from '@/data/activities';
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const wishlist = useWishlist();
+  const [activeActivityId, setActiveActivityId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     sortBy: '',
-    location: '',
+    location: 'Da Nang',
     minRating: 0,
     priceRange: '',
     hasDiscount: false,
@@ -101,9 +106,22 @@ const Index = () => {
           </h2>
         </div>
 
+        {/* City selector + Activity Map (map on top) */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
+          <label className="text-sm text-muted-foreground">City:</label>
+          <div className="w-full sm:w-64">
+            <select className="w-full rounded-md border px-3 py-2 bg-background" defaultValue={'Da Nang'} id="city-select" onChange={(e) => setFilters((f) => ({ ...f, location: e.target.value }))}>
+              {/* Keep Đà Nẵng as default; use activities location values when possible */}
+              {locations.map((l) => (
+                <option key={l} value={l.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/Đ/g, 'D').replace(/đ/g,'d').trim()}>{l}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* Activity Map */}
         {filteredActivities.length > 0 ? (
-          <ActivityMap activities={filteredActivities} />
+          <ActivityMap activities={filteredActivities} showSidebar={false} />
         ) : (
           <div className="text-center py-16">
             <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
@@ -115,6 +133,43 @@ const Index = () => {
             </p>
           </div>
         )}
+
+        {/* Activities + Local specialties (same section) */}
+        <section className="mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="lg:col-span-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {(() => {
+                  const list = filteredActivities;
+                  const groups: typeof list[] = [];
+                  for (let i = 0; i < list.length; i += 2) {
+                    groups.push(list.slice(i, i + 2));
+                  }
+                  return groups.map((group, idx) => (
+                    <div key={idx} className="space-y-4">
+                      {group.map((act) => (
+                        <ActivityCard
+                          key={act.id}
+                          activity={act}
+                          onToggleSave={(id) => wishlist.toggle(id)}
+                          isSaved={wishlist.isSaved(act.id)}
+                          onOpen={(id) => { setActiveActivityId(id); setIsModalOpen(true); }}
+                        />
+                      ))}
+                    </div>
+                  ));
+                })()}
+              </div>
+            </div>
+
+            <aside className="lg:col-span-2">
+              <LocalSpecialties selectedCity={filters.location} />
+            </aside>
+          </div>
+
+          {/* Activity modal */}
+          <ActivityModal activityId={activeActivityId} open={isModalOpen} onOpenChange={(open) => { setIsModalOpen(open); if (!open) setActiveActivityId(null); }} />
+        </section>
       </main>
 
       {/* Why Choose Us */}

@@ -26,9 +26,10 @@ interface ActivityCardProps {
   activity: Activity;
   isSaved?: boolean;
   onToggleSave?: (activityId: string) => void;
+  onOpen?: (activityId: string) => void;
 }
 
-const ActivityCard = ({ activity, isSaved: isSavedProp, onToggleSave }: ActivityCardProps) => {
+const ActivityCard = ({ activity, isSaved: isSavedProp, onToggleSave, onOpen }: ActivityCardProps) => {
   const [isLiked, setIsLiked] = useState(!!isSavedProp);
   const navigate = useNavigate();
   
@@ -39,7 +40,10 @@ const ActivityCard = ({ activity, isSaved: isSavedProp, onToggleSave }: Activity
   return (
     <Card 
       className="group overflow-hidden border-0 card-shadow hover:elevated-shadow transition-all duration-300 cursor-pointer"
-      onClick={() => navigate(`/activity/${activity.id}`)}
+      onClick={() => {
+        if (onOpen) return onOpen(activity.id);
+        navigate(`/activity/${activity.id}`);
+      }}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img 

@@ -5,9 +5,13 @@ import 'leaflet/dist/leaflet.css';
 import { useNavigate } from 'react-router-dom';
 import type { Activity } from '@/components/ActivityCard';
 import { Heart, Star } from 'lucide-react';
+import useWishlist from '@/hooks/useWishlist';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/hooks/use-toast';
 
 interface ActivityMapProps {
   activities: Activity[];
+  showSidebar?: boolean; // when false, render map only (full width)
 }
 
 const customIcon = new Icon({
@@ -36,7 +40,28 @@ const FitBounds: React.FC<{ positions: [number, number][] }> = ({ positions }) =
   return null;
 };
 
-const ActivityMap = ({ activities }: ActivityMapProps) => {
+const WishlistButton: React.FC<{ activity: Activity }> = ({ activity }) => {
+  const wishlist = useWishlist();
+  const isSaved = wishlist.isSaved(activity.id);
+
+  const handleClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await wishlist.toggle(activity.id);
+      toast({ title: isSaved ? 'Removed' : 'Saved', description: isSaved ? 'Removed from wishlist' : 'Added to your wishlist' });
+    } catch (err: any) {
+      toast({ title: 'Error', description: err?.message || 'Could not update wishlist' });
+    }
+  };
+
+  return (
+    <Button variant="ghost" size="icon" onClick={handleClick}>
+      <Heart className={`h-5 w-5 ${isSaved ? 'fill-price text-price' : 'text-foreground'}`} />
+    </Button>
+  );
+};
+
+const ActivityMap = ({ activities, showSidebar = true }: ActivityMapProps) => {
   const navigate = useNavigate();
   const [hoveredId, setHoveredId] = React.useState<string | null>(null);
 
@@ -50,10 +75,71 @@ const ActivityMap = ({ activities }: ActivityMapProps) => {
 
   const defaultCenter: [number, number] = positions.length > 0 ? positions[0] : [16.0544, 108.2022];
 
+  // If sidebar is hidden, render just the map (full width)
+  if (!showSidebar) {
+    return (
+      <div className="h-[700px] rounded-xl overflow-hidden relative z-0">
+        {/* @ts-ignore - react-leaflet types in this project are causing strict mismatch, ignore for now */}
+        <MapContainer center={defaultCenter} zoom={12} scrollWheelZoom={false} className="h-full w-full relative z-0" style={{ zIndex: 0 }}>
+          {/* @ts-ignore */}
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+
+          <FitBounds positions={positions} />
+
+          {activities.map((activity) =>
+            typeof activity.lat === 'number' && typeof activity.lng === 'number' ? (
+              /* @ts-ignore */
+              <Marker
+                key={activity.id}
+                position={[activity.lat as number, activity.lng as number]}
+                icon={customIcon}
+                eventHandlers={{
+                  mouseover: (e: any) => {
+                    try {
+                      e.target.openPopup();
+                    } catch (err) {}
+                    setHoveredId(activity.id);
+                  },
+                  mouseout: (e: any) => {
+                    try {
+                      e.target.closePopup();
+                    } catch (err) {}
+                    setHoveredId(null);
+                  },
+                  click: () => {
+                    navigate(`/activity/${activity.id}`);
+                  }
+                }}
+              >
+                <Popup>
+                  <div className="min-w-[220px]">
+                    <img src={activity.image} alt={activity.title} className="w-full h-28 object-cover rounded mb-2" />
+                    <strong className="block text-sm">{activity.title}</strong>
+                    <div className="flex items-center justify-between mt-1">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Star className="h-4 w-4 fill-star text-star" />
+                        <span className="font-semibold">{activity.rating.toFixed(1)}</span>
+                        <span className="text-xs">({activity.reviewCount})</span>
+                      </div>
+                      <div className="text-sm font-bold text-primary">${activity.price}</div>
+                    </div>
+                  </div>
+                </Popup>
+              </Marker>
+            ) : null
+          )}
+        </MapContainer>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Sidebar list */}
-  <aside className="lg:col-span-1 space-y-3 overflow-y-auto max-h-[700px] relative z-10">
+      <aside className="lg:col-span-1 space-y-3 overflow-y-auto max-h-[700px] relative z-10">
         {activities.map((a) => {
           const isHovered = hoveredId === a.id;
           return (
@@ -79,7 +165,7 @@ const ActivityMap = ({ activities }: ActivityMapProps) => {
                 </div>
               </div>
               <div className="pl-2">
-                <Heart className="h-5 w-5 text-foreground" />
+                <WishlistButton activity={a} />
               </div>
             </div>
           );
