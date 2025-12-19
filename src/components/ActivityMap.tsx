@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
 import { Icon, LatLngBoundsExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,19 @@ interface ActivityMapProps {
   activities: Activity[];
   showSidebar?: boolean; // when false, render map only (full width)
 }
+
+const ISLAND_LABELS = [
+  {
+    name: 'Hoàng Sa',
+    // Approximate center of Hoàng Sa (Paracel Islands)
+    position: [16.5, 112.0] as [number, number]
+  },
+  {
+    name: 'Trường Sa',
+    // Approximate center of Trường Sa (Spratly Islands)
+    position: [10.0, 114.0] as [number, number]
+  }
+] as const;
 
 const customIcon = new Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -88,6 +101,26 @@ const ActivityMap = ({ activities, showSidebar = true }: ActivityMapProps) => {
           />
 
           <FitBounds positions={positions} />
+
+          {/* Permanent Vietnamese labels for Hoàng Sa and Trường Sa */}
+          {ISLAND_LABELS.map((island) => (
+            /* @ts-ignore */
+            <Marker
+              key={island.name}
+              position={island.position}
+              icon={customIcon}
+              opacity={0}
+              interactive={false}
+            >
+              <Tooltip
+                permanent
+                direction="center"
+                className="!bg-transparent !border-none !shadow-none text-[10px] font-semibold text-emerald-800"
+              >
+                {island.name}
+              </Tooltip>
+            </Marker>
+          ))}
 
           {activities.map((activity) =>
             typeof activity.lat === 'number' && typeof activity.lng === 'number' ? (
@@ -183,6 +216,26 @@ const ActivityMap = ({ activities, showSidebar = true }: ActivityMapProps) => {
           />
 
           <FitBounds positions={positions} />
+
+          {/* Permanent Vietnamese labels for Hoàng Sa and Trường Sa */}
+          {ISLAND_LABELS.map((island) => (
+              /* @ts-ignore */
+              <Marker
+                key={island.name}
+                position={island.position}
+                icon={customIcon}
+                opacity={0}
+                interactive={false}
+              >
+                <Tooltip
+                  permanent
+                  direction="center"
+                  className="!bg-transparent !border-none !shadow-none text-[10px] font-semibold text-emerald-800"
+                >
+                  {island.name}
+                </Tooltip>
+              </Marker>
+          ))}
 
           {activities.map((activity) =>
               typeof activity.lat === 'number' && typeof activity.lng === 'number' ? (

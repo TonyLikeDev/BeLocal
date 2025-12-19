@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -18,6 +18,19 @@ const customIcon = new Icon({
   shadowSize: [41, 41]
 });
 
+const ISLAND_LABELS = [
+  {
+    name: 'Hoàng Sa',
+    // Approximate center of Hoàng Sa (Paracel Islands)
+    position: [16.5, 112.0] as [number, number]
+  },
+  {
+    name: 'Trường Sa',
+    // Approximate center of Trường Sa (Spratly Islands)
+    position: [10.0, 114.0] as [number, number]
+  }
+] as const;
+
 const LocationMap = ({ lat, lng, locationName }: LocationMapProps) => {
   return (
     <MapContainer
@@ -31,6 +44,24 @@ const LocationMap = ({ lat, lng, locationName }: LocationMapProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      {/* Permanent Vietnamese labels for Hoàng Sa and Trường Sa */}
+      {ISLAND_LABELS.map((island) => (
+        <Marker
+          key={island.name}
+          position={island.position}
+          icon={customIcon}
+          opacity={0}
+          interactive={false}
+        >
+          <Tooltip
+            permanent
+            direction="center"
+            className="!bg-transparent !border-none !shadow-none text-[10px] font-semibold text-emerald-800"
+          >
+            {island.name}
+          </Tooltip>
+        </Marker>
+      ))}
       <Marker position={[lat, lng]} icon={customIcon}>
         <Popup>
           <div className="text-center">
