@@ -4,7 +4,7 @@ export const activities: Activity[] = [
   {
     id: '1',
     title: 'Da Nang Family Cooking Class - with Local Family in Da Nang',
-    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80',
+    image: 'https://image.cookly.me/tr:h-544,w-824,pr-true,rt-auto/images/authentic-local-da-nang-family-cooking-class_dQzjQQl.JPG',
     location: 'Da Nang',
     rating: 5,
     reviewCount: 124,
