@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { getAIResponse } from '@/lib/aiChat';
+import { Loader2 } from 'lucide-react';
 
 const ChatWidget: React.FC = () => {
   const [open, setOpen] = React.useState(false);
@@ -7,16 +9,59 @@ const ChatWidget: React.FC = () => {
     { id: 1, text: 'Hi! Need help finding local food or activities?', from: 'bot' },
   ]);
   const [input, setInput] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
-  const send = () => {
-    if (!input.trim()) return;
+  // Auto-scroll to bottom when messages change or loading state changes
+  React.useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isLoading]);
+
+  // Scroll to bottom when chat opens
+  React.useEffect(() => {
+    if (open && messagesEndRef.current) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [open]);
+
+  const send = async () => {
+    if (!input.trim() || isLoading) return;
+    const userMessage = input.trim();
     const id = Date.now();
-    setMessages((m) => [...m, { id, text: input.trim(), from: 'me' }]);
+    setMessages((m) => [...m, { id, text: userMessage, from: 'me' }]);
     setInput('');
-    // simple bot reply simulation
-    setTimeout(() => {
-      setMessages((m) => [...m, { id: Date.now() + 1, text: 'Thanks — I can help with recommendations. Try selecting a city or category.', from: 'bot' }]);
-    }, 700);
+    setIsLoading(true);
+
+    try {
+      // Build conversation history for AI context
+      const conversationHistory = messages
+        .filter((m) => m.from !== 'me' || m.text !== 'Hi! Need help finding local food or activities?')
+        .map((m) => ({
+          role: (m.from === 'me' ? 'user' : 'assistant') as 'user' | 'assistant',
+          content: m.text,
+        }));
+
+      // Get AI response
+      const botResponse = await getAIResponse(userMessage, conversationHistory);
+      setMessages((m) => [...m, { id: Date.now() + 1, text: botResponse, from: 'bot' }]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      setMessages((m) => [
+        ...m,
+        {
+          id: Date.now() + 1,
+          text: 'Sorry, I encountered an error. Please try again!',
+          from: 'bot',
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -28,19 +73,38 @@ const ChatWidget: React.FC = () => {
             <div className="font-medium">BeLocal Chat</div>
             <button aria-label="Close chat" onClick={() => setOpen(false)} className="text-white opacity-90 hover:opacity-100">✕</button>
           </div>
-          <div className="p-3 flex-1 overflow-auto bg-slate-50">
+          <div ref={scrollContainerRef} className="p-3 flex-1 overflow-auto bg-slate-50">
             <div className="space-y-3">
               {messages.map((m) => (
                 <div key={m.id} className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`${m.from === 'me' ? 'bg-emerald-600 text-white' : 'bg-white border'} px-3 py-2 rounded-lg max-w-[80%] text-sm`}>{m.text}</div>
+                  <div className={`${m.from === 'me' ? 'bg-emerald-600 text-white' : 'bg-white border'} px-3 py-2 rounded-lg max-w-[80%] text-sm whitespace-pre-wrap`}>{m.text}</div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white border px-3 py-2 rounded-lg flex items-center gap-2 text-sm">
+                    <Loader2 className="h-4 w-4 animate-spin text-emerald-600" />
+                    <span className="text-muted-foreground">AI is thinking...</span>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
           </div>
           <div className="p-3 border-t bg-white">
             <div className="flex gap-2">
-              <input aria-label="Chat message" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && send()} className="flex-1 rounded-md border px-3 py-2" placeholder="Ask about food or activities..." />
-              <Button onClick={send} size="sm">Send</Button>
+              <input
+                aria-label="Chat message"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && !isLoading && send()}
+                disabled={isLoading}
+                className="flex-1 rounded-md border px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                placeholder="Ask about food or activities..."
+              />
+              <Button onClick={send} size="sm" disabled={isLoading}>
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Send'}
+              </Button>
             </div>
           </div>
         </div>
